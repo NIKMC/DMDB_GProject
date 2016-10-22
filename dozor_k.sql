@@ -1,11 +1,11 @@
 -—Messages
 
-SELECT m1.* 
-FROM Messages m1
-WHERE toid = '1'
-	AND date >= ALL(SELECT m2.date
-			FROM Messages m2
-			WHERE m1.fromid = m2.fromid)
+FROM messages m1 JOIN	(SELECT MAX(m2.date), m2.fromid, m2.toid
+			FROM messages m2
+			WHERE m2.toid = '1'
+			--
+			GROUP BY m2.fromid, m2.toid) AS maxDatedByFrom
+			ON  m1.fromid = maxDatedByFrom.fromid AND m1.toid = maxDatedByFrom.toid AND m1.date = maxDatedByFrom.max
 ORDER BY m1.date DESC
 
 
