@@ -1,4 +1,4 @@
--—Messages
+--Messages
 
 --SELECT m1.*
 --FROM messages m1 JOIN	(SELECT MAX(m2.date), m2.fromid, m2.toid
@@ -22,7 +22,7 @@ ORDER BY m1.date DESC
 
 INSERT INTO Messages(fromid, toid, id, text, date) VALUES(3, 1, 1000, 'R U degenerate??', '2016-10-22 19:57:00')
 
-—-end messages
+--end messages
 
 --Users
 
