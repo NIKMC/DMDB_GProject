@@ -1,26 +1,20 @@
 -—Messages
+INSERT INTO Messages(fromid, toid, id, text, date) VALUES(‘3’, ‘1’, 1000, 'R U degenerate??', '2016-10-22 19:57:00')
+INSERT INTO Messages(fromid, toid, id, text, date) VALUES(‘3’, ‘2’, 1001, 'Go tennis?', '2016-10-23 14:27:00')
+INSERT INTO Messages(fromid, toid, id, text, date) VALUES('2', '3', 1002, 'Go gardening?', '2016-10-23 21:27:00')
 
---SELECT m1.*
---FROM messages m1 JOIN	(SELECT MAX(m2.date), m2.fromid, m2.toid
---			FROM messages m2
---			WHERE m2.toid = '1'
---			--
---			GROUP BY m2.fromid, m2.toid) AS maxDatedByFrom
---			ON  m1.fromid = maxDatedByFrom.fromid AND m1.toid = maxDatedByFrom.toid AND m1.date = maxDatedByFrom.max
---ORDER BY m1.date DESC
+
 
 SELECT m1.* 
 FROM Messages m1
-WHERE toid = '3'
-	AND date >= ALL(SELECT m2.date
+WHERE (m1.fromid = '3' OR m1.toid = '3')
+	AND m1.date >= ALL(SELECT m2.date
 			FROM Messages m2
-			WHERE m1.fromid = m2.fromid
-				AND m1.toid = m2.toid
-			)
+			WHERE LEAST(m2.fromid, m2.toid) || GREATEST(m2.fromid, m2.toid) = LEAST(m1.fromid, m1.toid) || GREATEST(m1.fromid, m1.toid))
 ORDER BY m1.date DESC
 
 
-INSERT INTO Messages(fromid, toid, id, text, date) VALUES(3, 1, 1000, 'R U degenerate??', '2016-10-22 19:57:00')
+
 
 —-end messages
 
