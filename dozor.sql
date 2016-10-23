@@ -171,11 +171,13 @@ SELECT * FROM Cities
 SELECT Id, Name, Center_Latitude, Center_Longitude FROM Cities
 
 SELECT * FROM Cities WHERE Id = '1'
+
 SELECT Id, Name, Center_Latitude, Center_Longitude FROM Cities WHERE Id = '1'
 
 INSERT INTO Cities VALUES (1, 'Ульяновск');
 INSERT INTO Cities (Id, Name, Center_Latitude, Center_Longitude)
     VALUES (2, 'Innopolis', 0.1, 0.1);
+
 INSERT INTO Cities VALUES (2, 'Innopolis', 0.55 , 0.55);
 
 UPDATE Cities SET Name = 'Ульяновск', Center_Latitude = 0.55, Center_Longitude = 0.55
@@ -295,8 +297,11 @@ ORDER by Date desc limit 1
 
 max(Date)
 
+none
+
 
 /*  selects, insert, update, delete LocationTasks   */
+/*
 Id 		        integer     NOT NULL,
 Task       	        varchar     NOT NULL,
 Center_Latitude  	FLOAT (53)  NOT NULL,
@@ -305,15 +310,18 @@ Radius  		FLOAT (53)  NOT NULL,
 CityId 			integer     NOT NULL,
 Difficulty  		varchar     NOT NULL,
 Description 		varchar     NULL,
-
+*/
 select * from LocationTasks
+
 select Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description from LocationTasks
 
 select * from LocationTasks where CityId IN (select CityId from Users where Id = '1')
+
 select Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description 
 from LocationTasks where CityId IN (select CityId from Users where Id = '1')
 
 select * from LocationTasks where Id = '1'
+
 select Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description 
 from LocationTasks where Id = '1'
 
@@ -326,28 +334,84 @@ INSERT INTO Locationtasks (Id, Task, Center_Latitude, Center_Longitude, Radius, 
     VALUES (3, 'Посетите Innopolis', 0, 0, 0, 2, 'hard', '');
 
 
-    UPDATE LocationTasks SET Task = 'Ульяновск', 
-Center_Latitude = '0.0', 
-Center_Longitude = '0.0', 
-Radius = '100',
-CityId = '1',
-Difficulty = 'hard',
-Description = ''
+UPDATE LocationTasks SET Task = 'Ульяновск', Center_Latitude = '0.0', Center_Longitude = '0.0', 
+Radius = '100', CityId = '1', Difficulty = 'hard', Description = ''
 WHERE Id = 1;
 
-UPDATE User SET Center_Latitude = '0.0', 
-Center_Longitude = '0.0',
-Radius = '100'
+UPDATE LocationTasks SET Center_Latitude = '0.0', Center_Longitude = '0.0', Radius = '100'
 WHERE Id = 1;
-UPDATE User SET Task = 'Ульяновск2', 
-Difficulty = 'hard',
-Description = ''
+
+UPDATE LocationTasks SET Center_Latitude = '0.0', Center_Longitude = '0.0',
+WHERE Id = 1;
+
+UPDATE LocationTasks SET Radius = '100' WHERE Id = 1;
+
+UPDATE LocationTasks SET Task = 'Ульяновск2', Difficulty = 'hard', Description = ''
 WHERE Id = 1;
 
 DELETE FROM LocationTasks WHERE Id = 0;
 
 /* get list Completed LocationTasks doesnt work */
 /* get list UnCompleted LocationTasks doesnt work */
+
+
+/* QuestionLocationTasks
+Id 		        integer NOT NULL,
+Task       	        varchar NOT NULL,
+Center_Latitude  	FLOAT (53)     NOT NULL,
+Center_Longitude 	FLOAT (53)     NOT NULL,
+Radius  	FLOAT (53)     NOT NULL,
+CityId 		integer     DEFAULT ((0)) NOT NULL,
+Difficulty  	varchar     NOT NULL,
+Description 	varchar     NULL,
+Answer  		varchar     NULL,
+*/
+
+select * from QuestionLocationTasks
+
+select Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description, Answer from QuestionLocationTasks
+
+select * from QuestionLocationTasks where CityId IN (select CityId from Users where Id = '1')
+
+select Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description, Answer 
+from QuestionLocationTasks where CityId IN (select CityId from Users where Id = '1')
+
+select * from QuestionLocationTasks where Id = '1'
+
+select Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description, Answer 
+from QuestionLocationTasks where Id = '1'
+
+
+INSERT INTO QuestionLocationTasks (Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description)
+    VALUES (1, 'Посетите Политех', 54.3513933317246, 48.3873583518057, 350, 1, 'light', 'В каком году был построен?');
+INSERT INTO QuestionLocationTasks (Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description)
+    VALUES (2, 'Посетите Стачку', 54.3196205081769, 48.4062026768323, 90, 1, 'medium', 'Дата первой Стачки');
+INSERT INTO QuestionLocationTasks (Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description, Answer)
+    VALUES (3, 'Посетите Innopolis', 0, 0, 0, 2, 'hard', 'Сколько кампусов?', '4');
+
+
+UPDATE QuestionLocationTasks SET Task = 'Ульяновск', Center_Latitude = '0.0', Center_Longitude = '0.0', 
+Radius = '100', CityId = '1', Difficulty = 'hard', Description = '', Answer = ''
+WHERE Id = 1;
+
+UPDATE QuestionLocationTasks SET Center_Latitude = '0.0', Center_Longitude = '0.0', Radius = '100'
+WHERE Id = 1;
+
+UPDATE QuestionLocationTasks SET Center_Latitude = '0.0', Center_Longitude = '0.0',
+WHERE Id = 1;
+
+UPDATE QuestionLocationTasks SET Radius = '100' WHERE Id = 1;
+
+UPDATE QuestionLocationTasks SET Task = 'Ульяновск2', Difficulty = 'hard', Description = '', Answer = ''
+WHERE Id = 1;
+
+UPDATE QuestionLocationTasks SET Task = 'Ульяновск2', Description = '', Answer = ''
+WHERE Id = 1;
+
+DELETE FROM QuestionLocationTasks WHERE Id = 0;
+/* get list Completed QuestionLocationTasks doesnt work */
+/* get list UnCompleted QuestionLocationTasks doesnt work */
+
 
 
 /*-----------------------------------------------------------------------------*/
