@@ -218,6 +218,8 @@ select Id, FirstName, LastName, Email, UserName, Other, LastLocation_Latitude, L
 INSERT INTO Users VALUES (1, 'Ivan','Nikitin','i.nikitin@innopolis.ru','NIKMC', 'Innopolis');
 INSERT INTO Users VALUES (2, 'H','','nikmc10@mail.ru','Hummer', 'Ульяновск');
 INSERT INTO Users VALUES (3, 'G','','nikmc10@yandex.ru','GHOST', 'Other');
+INSERT INTO Users VALUES (4, 'qwerty','','qwerty@qwerty.ru','qwerty', 'Other');
+INSERT INTO Users VALUES (5, 'hama','','hama@hama.ru','hama', 'Other');
 
 INSERT INTO Users (Id, UserName, FirstName, LastName, Email, Other, CityId)
     VALUES (1, 'NIKMC', 'Ivan', 'Nikitin', 'i.nikitin@innopolis.ru','Innopolis', 2);
@@ -225,7 +227,10 @@ INSERT INTO Users (Id, UserName, FirstName, LastName, Email, Other, CityId)
     VALUES (2, 'Hummer', 'H','','nikmc10@mail.ru','Ульяновск - city', 1);
 INSERT INTO Users (Id, UserName, FirstName, LastName, Email, Other, CityId)
     VALUES (3, 'GHOST', 'G','','nikmc10@yandex.ru','Other', 1);
-
+INSERT INTO Users (Id, UserName, FirstName, LastName, Email, Other, CityId)
+    VALUES (4, 'qwerty', 'G','','qwerty@qwerty.ru','qwerty', 1);
+INSERT INTO Users (Id, UserName, FirstName, LastName, Email, Other, CityId)
+    VALUES (5, 'hama', 'G','','hama@hama.ru','hama', 1);
 UPDATE User SET FirstName = 'Ульяновск', 
 LastName = 'Ульяновск', 
 Email = 'Ульяновск', 
@@ -283,7 +288,14 @@ INSERT INTO Messages (Id, FromId, ToId, Text, Date)
     VALUES (7, 3, 1, 'Hello' ,'2016-10-22 12:29:00');
 INSERT INTO Messages (Id, FromId, ToId, Text, Date)
     VALUES (8, 1, 2, 'Работает?' ,'2016-10-22 12:30:00');
-
+INSERT INTO Messages (Id, FromId, ToId, Text, Date)
+    VALUES (9, 2, 3, 'Who are you?' ,'2016-10-22 12:31:00');
+INSERT INTO Messages (Id, FromId, ToId, Text, Date)
+    VALUES (10, 3, 2, 'Vasy?' ,'2016-10-22 12:32:00');
+INSERT INTO Messages (Id, FromId, ToId, Text, Date)
+    VALUES (11, 4, 1, 'hi man' ,'2016-10-22 12:33:00');
+INSERT INTO Messages (Id, FromId, ToId, Text, Date)
+    VALUES (12, 1, 5, 'FOr five' ,'2016-10-22 12:34:00');
 /* getListMessage = Dialog*/
 select * from Messages 
 where FromId = '1' and ToId = '2' or FromId = '2' and ToId = '1'
@@ -298,6 +310,43 @@ ORDER by Date desc limit 1
 max(Date)
 
 none
+
+select * from messages where case
+
+select  m.fromid, m.toid from messages m
+where m.fromid = '1' or m.toid = '1'
+
+select m.fromid, m.toid from messages m
+where exists (select mm.fromid from messages mm where mm.fromid = '1' or mm.toid = '1' and mm.fromid < m.toid)
+
+SELECT * FROM 
+(
+    SELECT DISTINCT ON (interlocutor) * FROM
+    (
+        SELECT Id, FromId, toId, text, date, fromid AS interlocutor FROM messages WHERE toId= '1'
+        UNION ALL
+        SELECT  Id, FromId, toId, text, date, toId AS interlocutor FROM messages WHERE fromId= '1'
+    ) AS _t1
+    ORDER BY interlocutor, date DESC
+) AS _t2
+ORDER BY date DESC;
+
+SELECT m1.* 
+FROM Messages m1
+WHERE (m1.fromid = '1' OR m1.toid = '1')
+ AND m1.date >= ALL(SELECT m2.date
+   FROM Messages m2
+   WHERE LEAST(m2.fromid, m2.toid) || GREATEST(m2.fromid, m2.toid) = LEAST(m1.fromid, m1.toid) || GREATEST(m1.fromid, m1.toid))
+ORDER BY m1.date DESC
+
+select * from Messages where(
+select distinct (ins) where
+select (ins) where
+where FromId = '1' order by ind 
+union
+select (ins) where
+
+)
 
 
 /*  selects, insert, update, delete LocationTasks   */
