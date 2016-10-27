@@ -46,3 +46,52 @@ INSERT INTO 	Cities (Id, Name, Center_Latitude, Center_Longitude)
 INSERT INTO 	Cities (Id, Name, Center_Latitude, Center_Longitude)
 		VALUES (1003, 'Riga', 53.2, 102.8);
 --end cities	
+
+
+
+--userfollowers
+
+ALTER TABLE userfollowers ADD CONSTRAINT no_self_following CHECK (followerid != userid)
+
+INSERT INTO userfollowers 	(userid, followerid)
+		VALUES		('1', '1000');
+INSERT INTO userfollowers 	(userid, followerid)
+		VALUES		('1', '1001');
+INSERT INTO userfollowers 	(userid, followerid)
+		VALUES		('1', '1002');
+INSERT INTO userfollowers 	(userid, followerid)
+		VALUES		('3', '1003');
+INSERT INTO userfollowers 	(userid, followerid)
+		VALUES		('2', '1001');
+INSERT INTO userfollowers 	(userid, followerid)
+		VALUES		('3', '1002');
+INSERT INTO userfollowers 	(userid, followerid)
+		VALUES		('1000', '1');
+INSERT INTO userfollowers 	(userid, followerid)
+		VALUES		('1001', '1');
+
+—friends list
+SELECT * 
+FROM users JOIN (SELECT followerId
+		FROM userfollowers u1
+		WHERE u1.userid = '1'
+			AND followerid IN  (	SELECT userId
+						FROM userfollowers
+						WHERE followerId = u1.userid)) as friend_ids
+	ON followerid = id
+
+--followers list
+SELECT * 
+FROM users JOIN (SELECT followerId
+		FROM userfollowers u1
+		WHERE u1.userid = '1'	) as follower_ids
+	ON followerid = id
+
+--subscriptions list
+SELECT * 
+FROM users JOIN (SELECT  userid
+		FROM userfollowers u
+		WHERE u.followerId = '1'	) as following_id
+	ON userid = id
+
+--end userfollowers
