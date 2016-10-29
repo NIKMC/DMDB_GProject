@@ -70,7 +70,7 @@ INSERT INTO userfollowers 	(userid, followerid)
 INSERT INTO userfollowers 	(userid, followerid)
 		VALUES		('1001', '1');
 
-—friends list
+--friends list
 SELECT * 
 FROM users JOIN (SELECT followerId
 		FROM userfollowers u1
@@ -95,3 +95,45 @@ FROM users JOIN (SELECT  userid
 	ON userid = id
 
 --end userfollowers
+
+-- location tsks
+
+INSERT INTO Locationtasks (Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description)
+    VALUES (1000, 'Visit ass', 100.1, 340.0, 0, 1000, 'easy', '');
+INSERT INTO Locationtasks (Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description)
+    VALUES (1001, 'Visit market', 100.1, 340.0, 0, 1000, 'hard', '');
+
+
+
+-- end location tasks
+
+--LocationTaskApplicationUsers
+INSERT INTO LocationTaskApplicationUsers VALUES(1,1000), (1,1001), (1001, 1), (1001,2);
+INSERT INTO LocationTaskApplicationUsers VALUES(2,1000), (3,1000), (1, 1), (2,1);
+INSERT INTO Locationtasks (Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description)
+    VALUES (1002, 'Посетите музей Ильича', 0, 0, 0, 1, 'hard', 'harley');
+UPDATE  users
+SET cityid = 1
+WHERE id = '1000'
+
+--completed  tasks in user's city
+SELECT *
+FROM locationtasks JOIN (SELECT task_id
+			FROM LocationTaskApplicationUsers AU JOIN locationtasks T ON AU.task_id=T.id JOIN users U ON U.id = AU.user_id
+			WHERE user_id = '1000'
+				AND U.cityid = T.cityid
+				) as completedTasksForUser
+		ON task_id = id
+
+--offered (non-completed tasks)
+SELECT T.*
+FROM locationtasks T, users U
+WHERE T.cityid = U.cityid
+	AND U.id = '1' 						--userid
+	AND T.id NOT IN	(SELECT task_id 
+			FROM LocationTaskApplicationUsers 
+			WHERE user_id = '1')	 		--userid
+
+
+
+--end LocationTaskApplicationUsers 
