@@ -84,7 +84,11 @@ FROM users JOIN (SELECT followerId
 SELECT * 
 FROM users JOIN (SELECT followerId
 		FROM userfollowers u1
-		WHERE u1.userid = '1'	) as follower_ids
+		WHERE u1.userid = '1'
+			AND NOT EXISTS (SELECT * 
+					FROM userfollowers uf2 
+					WHERE uf2.userid = u1.followerid
+						AND uf2.followerid = u1.userid)) as follower_ids
 	ON followerid = id
 
 --subscriptions list
