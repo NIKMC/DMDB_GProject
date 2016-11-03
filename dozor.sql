@@ -1,12 +1,5 @@
-﻿--create tables
-/*CREATE TABLE Enroll(
-student_id integer,
-ClassNumber_id integer,
-grade varchar(2),
-PRIMARY KEY (student_id, ClassNumber_id),
-FOREIGN KEY (student_id) REFERENCES students (sid),
-FOREIGN KEY (ClassNumber_id) REFERENCES class (ClassNumber)
-)*/
+﻿--drop tables
+
 drop table if exists LocationTaskApplicationUsers;
 drop table if exists QuestionAnswerApplicationUsers;
 drop table if exists QuestionLocationTaskApplicationUsers;
@@ -18,6 +11,8 @@ drop table if exists FriendRequests;
 drop table if exists UserFollowers;
 drop table if exists Users;
 drop table if exists Cities;
+
+--create tables
 
 CREATE TABLE Cities(
 Id 		        integer NOT NULL,
@@ -120,7 +115,7 @@ CONSTRAINT PK_Messages PRIMARY KEY (FromId, ToId, Id),
 CONSTRAINT FK_Messages_Users_FromId FOREIGN KEY (FromId) REFERENCES Users (Id),
 CONSTRAINT FK_Messages_Users_ToId FOREIGN KEY (ToId) REFERENCES Users (Id)
 );
-
+/*
 CREATE TABLE FriendRequests(
 UserId			varchar(128) NOT NULL,
 FollowerId		varchar(128) NOT NULL,
@@ -129,7 +124,7 @@ CONSTRAINT PK_Friendrequests PRIMARY KEY (UserId, FollowerId),
 CONSTRAINT FK_Friendrequests_Users_UserId FOREIGN KEY (UserId) REFERENCES Users (Id) ON DELETE CASCADE,
 CONSTRAINT FK_Friendrequests_Users_FollowerId FOREIGN KEY (FollowerId) REFERENCES Users (Id) ON DELETE CASCADE
 );
-
+*/
 CREATE TABLE UserFollowers(
 UserId			varchar(128) NOT NULL,
 FollowerId		varchar(128) NOT NULL,
@@ -163,64 +158,10 @@ CONSTRAINT FK_QuestionLocationTaskApplicationUsers_Users_User_Id FOREIGN KEY (Us
 );
 
 /*-----------------------------------------------------------------------------*/
-
-/*  selects Cities   */
-
-SELECT * FROM Cities
-
-SELECT Id, Name, Center_Latitude, Center_Longitude FROM Cities
-
-SELECT * FROM Cities WHERE Id = '1'
-
-SELECT Id, Name, Center_Latitude, Center_Longitude FROM Cities WHERE Id = '1'
-
+--INSERT
 INSERT INTO Cities VALUES (1, 'Ульяновск');
 INSERT INTO Cities (Id, Name, Center_Latitude, Center_Longitude)
     VALUES (2, 'Innopolis', 0.1, 0.1);
-
-INSERT INTO Cities VALUES (2, 'Innopolis', 0.55 , 0.55);
-
-UPDATE Cities SET Name = 'Ульяновск', Center_Latitude = 0.55, Center_Longitude = 0.55
-WHERE Id = 1;
-UPDATE Cities SET Name = 'Ульяновск'
-WHERE Id = 1;
-UPDATE Cities SET Center_Latitude = 0.55, Center_Longitude = 0.55
-WHERE Id = 1;
-
-DELETE FROM Cities WHERE Id = 1;
-
-/*  selects, insert, update, delete Users   */
-/*Id 		       varchar(128) NOT NULL,
-FirstName              varchar NULL,
-LastName               varchar NULL,
-Email                  varchar (256) NULL,
-PasswordHash           varchar NULL,
-LockoutEndDateUtc      timestamp        NULL,
-UserName               varchar(256) NOT NULL,
-Other                  varchar NULL,
-LastLocation_Latitude  FLOAT (53)     DEFAULT ((0)) NOT NULL,
-LastLocation_Longitude FLOAT (53)     DEFAULT ((0)) NOT NULL,
-LastSeen               timestamp        DEFAULT ('1900-01-01T00:00:00.00') NOT NULL,
-Level                  FLOAT (53)     DEFAULT ((0)) NOT NULL,
-CityId                 INT            DEFAULT ((0)) NOT NULL,
-*/
-select * from Users
-
-select Id, FirstName, LastName, Email, UserName, Other, LastLocation_Latitude, LastLocation_Longitude, Level from Users
-
-select * from Users where CityId = '1'
-select Id, FirstName, LastName, Email, UserName, Other, LastLocation_Latitude, LastLocation_Longitude, Level from Users where CityId = '1'
-
-select * from Users where Id = '1'
-select Id, FirstName, LastName, Email, UserName, Other, LastLocation_Latitude, LastLocation_Longitude, Level from Users where Id = '1'
-
-
-INSERT INTO Users VALUES (1, 'Ivan','Nikitin','i.nikitin@innopolis.ru','NIKMC', 'Innopolis');
-INSERT INTO Users VALUES (2, 'H','','nikmc10@mail.ru','Hummer', 'Ульяновск');
-INSERT INTO Users VALUES (3, 'G','','nikmc10@yandex.ru','GHOST', 'Other');
-INSERT INTO Users VALUES (4, 'qwerty','','qwerty@qwerty.ru','qwerty', 'Other');
-INSERT INTO Users VALUES (5, 'hama','','hama@hama.ru','hama', 'Other');
-
 INSERT INTO Users (Id, UserName, FirstName, LastName, Email, Other, CityId)
     VALUES (1, 'NIKMC', 'Ivan', 'Nikitin', 'i.nikitin@innopolis.ru','Innopolis', 2);
 INSERT INTO Users (Id, UserName, FirstName, LastName, Email, Other, CityId)
@@ -231,44 +172,6 @@ INSERT INTO Users (Id, UserName, FirstName, LastName, Email, Other, CityId)
     VALUES (4, 'qwerty', 'G','','qwerty@qwerty.ru','qwerty', 1);
 INSERT INTO Users (Id, UserName, FirstName, LastName, Email, Other, CityId)
     VALUES (5, 'hama', 'G','','hama@hama.ru','hama', 1);
-UPDATE User SET FirstName = 'Ульяновск', 
-LastName = 'Ульяновск', 
-Email = 'Ульяновск', 
-UserName = 'NIKMC',
-Other = 'ADMIN'
-WHERE Id = 1;
-UPDATE User SET FirstName = 'Иван'
-WHERE Id = 1;
-UPDATE User SET LastName = 'Никитин'
-WHERE Id = 1;
-UPDATE User SET Email = 'nikmc10@gmail.com'
-WHERE Id = 1;
-UPDATE User SET UserName = 'NIKMC'
-WHERE Id = 1;
-UPDATE User SET Other = 'ADMIN'
-WHERE Id = 1;
-UPDATE User SET Level = '9.999'
-WHERE Id = 1;
-UPDATE User SET CityId = 1
-WHERE Id = 1;
-UPDATE User SET Center_Latitude = 0.55, Center_Longitude = 0.55
-WHERE Id = 1;
-
-DELETE FROM Users WHERE Id = 0;
-
-/*getFriends doesnt work*/
---friends list
-SELECT * 
-FROM users JOIN (SELECT followerId
-		FROM userfollowers u1
-		WHERE u1.userid = '1'
-			AND followerid IN  (	SELECT userId
-						FROM userfollowers
-						WHERE followerId = u1.userid)) as friend_ids
-	ON followerid = id
-/*getFolowers doesnt work*/
-select * from Users where Id = (select FollowerId from UserFollowers where UserId = '1')
-select Id, FirstName, LastName, Email, UserName, Other, LastLocation_Latitude, LastLocation_Longitude, Level from Users  where Id = (select FollowerId from UserFollowers where UserId = '1')
 
 INSERT INTO userfollowers 	(userid, followerid)
 		VALUES		('1', '2');
@@ -288,35 +191,6 @@ INSERT INTO userfollowers 	(userid, followerid)
 		VALUES		('5', '1');
 		select * from Users
 
-
-
---followers list - doesnt work
-SELECT * 
-FROM users JOIN (SELECT followerId
-		FROM userfollowers u1
-		WHERE u1.userid = '1'	) as follower_ids
-	ON followerid = id
-
---subscriptions list
-SELECT * 
-FROM users JOIN (SELECT  userid
-		FROM userfollowers u
-		WHERE u.followerId = '1'	) as following_id
-	ON userid = id
-
---end userfollowers
-
-
-
-
-/*  selects, insert, update, delete Messages   */
-/*
-FromId 		       varchar(128) NOT NULL,
-ToId 		       varchar(128) NOT NULL,
-Id 		       varchar(128) NOT NULL,
-Text		       varchar NULL,
-Date 		       timestamp NOT NULL,
-*/
 INSERT INTO Messages (Id, FromId, ToId, Text, Date)
     VALUES (1, 1, 2, 'Привет' , '2016-10-22 12:23:00');
 INSERT INTO Messages (Id, FromId, ToId, Text, Date)
@@ -341,6 +215,175 @@ INSERT INTO Messages (Id, FromId, ToId, Text, Date)
     VALUES (11, 4, 1, 'hi man' ,'2016-10-22 12:33:00');
 INSERT INTO Messages (Id, FromId, ToId, Text, Date)
     VALUES (12, 1, 5, 'FOr five' ,'2016-10-22 12:34:00');
+
+INSERT INTO Locationtasks (Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description)
+    VALUES (1, 'Посетите Политех', 54.3513933317246, 48.3873583518057, 350, 1, 'light', '');
+INSERT INTO Locationtasks (Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description)
+    VALUES (2, 'Посетите Стачку', 54.3196205081769, 48.4062026768323, 90, 1, 'medium', '');
+INSERT INTO Locationtasks (Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description)
+    VALUES (3, 'Посетите Innopolis', 0, 0, 0, 2, 'hard', '');
+
+INSERT INTO LocationTaskApplicationUsers VALUES (1,1), (3,1), (3, 2), (3,3);
+INSERT INTO LocationTaskApplicationUsers VALUES (1,2);
+
+INSERT INTO QuestionLocationTasks (Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description)
+    VALUES (1, 'Посетите Политех', 54.3513933317246, 48.3873583518057, 350, 1, 'light', 'В каком году был построен?');
+INSERT INTO QuestionLocationTasks (Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description, Answer)
+    VALUES (2, 'Посетите Стачку', 54.3196205081769, 48.4062026768323, 90, 1, 'medium', 'Дата первой Стачки', '2012');
+INSERT INTO QuestionLocationTasks (Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description, Answer)
+    VALUES (3, 'Посетите Innopolis', 0, 0, 0, 2, 'hard', 'Сколько кампусов?', '4');
+
+INSERT INTO QuestionLocationTaskApplicationUsers VALUES (1,1), (3,1), (3, 2), (3,3);
+INSERT INTO QuestionLocationTaskApplicationUsers VALUES (2,2);
+
+select * from QuestionAnswers;
+INSERT INTO QuestionAnswers (Id, Task, CityId, Difficulty, Description, Answer)
+    VALUES (1, 'Посетите Политех', 1, 'light', 'В каком году был построен?', '');
+INSERT INTO QuestionAnswers (Id, Task, CityId, Difficulty, Description, Answer)
+    VALUES (2, 'Посетите Стачку', 1, 'medium', 'Дата первой Стачки', '2012');
+INSERT INTO QuestionAnswers (Id, Task, CityId, Difficulty, Description, Answer)
+    VALUES (3, 'Посетите Innopolis', 2, 'hard', 'Сколько кампусов?', '4');
+
+INSERT INTO QuestionAnswerApplicationUsers VALUES (1,1), (3,1), (3, 2), (3,3);
+INSERT INTO QuestionAnswerApplicationUsers VALUES (2,2);
+
+
+
+
+
+
+/*  selects Cities   */
+
+SELECT * FROM Cities
+
+SELECT Id, Name, Center_Latitude, Center_Longitude FROM Cities
+
+SELECT * FROM Cities WHERE Id = '1'
+
+SELECT Id, Name, Center_Latitude, Center_Longitude FROM Cities WHERE Id = '1'
+
+/*  selects, insert, update, delete Users   */
+select * from Users
+select Id, FirstName, LastName, Email, UserName, Other, LastLocation_Latitude, LastLocation_Longitude, Level from Users
+
+select * from Users where CityId = '1'
+select Id, FirstName, LastName, Email, UserName, Other, LastLocation_Latitude, LastLocation_Longitude, Level from Users where CityId = '1'
+
+select * from Users where Id = '1'
+select Id, FirstName, LastName, Email, UserName, Other, LastLocation_Latitude, LastLocation_Longitude, Level from Users where Id = '1'
+
+
+--INSERT INTO Cities VALUES (2, 'Innopolis', 0.55 , 0.55);
+
+UPDATE Cities SET Name = 'Ульяновск', Center_Latitude = 0.55, Center_Longitude = 0.55
+WHERE Id = 1;
+UPDATE Cities SET Name = 'Ульяновск'
+WHERE Id = 1;
+UPDATE Cities SET Center_Latitude = 0.55, Center_Longitude = 0.55
+WHERE Id = 1;
+
+DELETE FROM Cities WHERE Id = 1;
+
+
+
+--INSERT INTO Users VALUES (1, 'Ivan','Nikitin','i.nikitin@innopolis.ru','NIKMC', 'Innopolis');
+--INSERT INTO Users VALUES (2, 'H','','nikmc10@mail.ru','Hummer', 'Ульяновск');
+--INSERT INTO Users VALUES (3, 'G','','nikmc10@yandex.ru','GHOST', 'Other');
+--INSERT INTO Users VALUES (4, 'qwerty','','qwerty@qwerty.ru','qwerty', 'Other');
+--INSERT INTO Users VALUES (5, 'hama','','hama@hama.ru','hama', 'Other');
+
+UPDATE User SET FirstName = 'Ульяновск', 
+LastName = 'Ульяновск', 
+Email = 'Ульяновск', 
+UserName = 'NIKMC',
+Other = 'ADMIN'
+WHERE Id = 1;
+
+UPDATE User SET FirstName = 'Иван'
+WHERE Id = 1;
+
+UPDATE User SET LastName = 'Никитин'
+WHERE Id = 1;
+
+UPDATE User SET Email = 'nikmc10@gmail.com'
+WHERE Id = 1;
+
+UPDATE User SET UserName = 'NIKMC'
+WHERE Id = 1;
+
+UPDATE User SET Other = 'ADMIN'
+WHERE Id = 1;
+
+UPDATE User SET Level = '9.999'
+WHERE Id = 1;
+
+UPDATE User SET CityId = 1
+WHERE Id = 1;
+
+UPDATE User SET Center_Latitude = 0.55, Center_Longitude = 0.55
+WHERE Id = 1;
+
+DELETE FROM Users WHERE Id = 0;
+
+/*getFriends doesnt work*/
+--friends list
+SELECT * 
+FROM users JOIN (SELECT followerId
+		FROM userfollowers u1
+		WHERE u1.userid = '1'
+			AND followerid IN  (	SELECT userId
+						FROM userfollowers
+						WHERE followerId = u1.userid)) as friend_ids
+	ON followerid = id
+/*getFolowers doesnt work*/
+select * from Users where Id = (select FollowerId from UserFollowers where UserId = '1')
+select Id, FirstName, LastName, Email, UserName, Other, LastLocation_Latitude, LastLocation_Longitude, Level from Users  where Id = (select FollowerId from UserFollowers where UserId = '1')
+
+
+
+
+--followers list - doesnt work
+SELECT * 
+FROM users JOIN (SELECT followerId
+		FROM userfollowers u1
+		WHERE u1.userid = '1'	) as follower_ids
+	ON followerid = id
+
+--followers list
+SELECT * 
+FROM users JOIN (SELECT followerId
+  FROM userfollowers u1
+  WHERE u1.userid = '1'
+   AND NOT EXISTS (SELECT * 
+     FROM userfollowers uf2 
+     WHERE uf2.userid = u1.followerid
+      AND uf2.followerid = u1.userid)) as follower_ids
+ ON followerid = id
+
+--subscriptions list
+SELECT * 
+FROM users JOIN (SELECT  userid
+		FROM userfollowers u
+		WHERE u.followerId = '1'	) as following_id
+	ON userid = id
+
+--end userfollowers
+
+SELECT * 
+FROM users JOIN (SELECT userId
+  FROM userfollowers u1
+  WHERE u1.followerId = '1'
+   AND NOT EXISTS (SELECT * 
+     FROM userfollowers uf2 
+     WHERE uf2.userid = u1.followerid
+      AND uf2.followerid = u1.userid)) as follower_ids
+ ON userid = id
+
+
+
+
+/*  selects, insert, update, delete Messages   */
+
 /* getListMessage = Dialog - works*/
 select * from Messages 
 where FromId = '1' and ToId = '2' or FromId = '2' and ToId = '1'
@@ -373,16 +416,7 @@ ORDER BY m1.date DESC
 
 
 /*  selects, insert, update, delete LocationTasks   */
-/*
-Id 		        integer     NOT NULL,
-Task       	        varchar     NOT NULL,
-Center_Latitude  	FLOAT (53)  NOT NULL,
-Center_Longitude 	FLOAT (53)  NOT NULL,
-Radius  		FLOAT (53)  NOT NULL,
-CityId 			integer     NOT NULL,
-Difficulty  		varchar     NOT NULL,
-Description 		varchar     NULL,
-*/
+
 select * from LocationTasks
 
 select Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description from LocationTasks
@@ -396,15 +430,6 @@ select * from LocationTasks where Id = '1'
 
 select Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description 
 from LocationTasks where Id = '1'
-
-
-INSERT INTO Locationtasks (Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description)
-    VALUES (1, 'Посетите Политех', 54.3513933317246, 48.3873583518057, 350, 1, 'light', '');
-INSERT INTO Locationtasks (Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description)
-    VALUES (2, 'Посетите Стачку', 54.3196205081769, 48.4062026768323, 90, 1, 'medium', '');
-INSERT INTO Locationtasks (Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description)
-    VALUES (3, 'Посетите Innopolis', 0, 0, 0, 2, 'hard', '');
-
 
 UPDATE LocationTasks SET Task = 'Ульяновск', Center_Latitude = '0.0', Center_Longitude = '0.0', 
 Radius = '100', CityId = '1', Difficulty = 'hard', Description = ''
@@ -424,8 +449,6 @@ WHERE Id = 1;
 DELETE FROM LocationTasks WHERE Id = 0;
 
 
-INSERT INTO LocationTaskApplicationUsers VALUES (1,1), (3,1), (3, 2), (3,3);
-INSERT INTO LocationTaskApplicationUsers VALUES (1,2);
 --INSERT INTO LocationTaskApplicationUsers VALUES(2,1000), (3,1000), (1, 1), (2,1);
 select * from LocationTaskApplicationUsers
 /* get list Completed LocationTasks work */
@@ -438,7 +461,7 @@ FROM locationtasks JOIN (SELECT task_id
 				) as completedTasksForUser
 		ON task_id = id
 --with city -- simplier
-select * 
+select *
 from locationTasks 
 		where Id IN 
 			(select task_id from locationTaskApplicationUsers where user_id = '1')
@@ -462,21 +485,14 @@ WHERE T.cityid = U.cityid
 --end LocationTaskApplicationUsers 
 
 
-/* QuestionLocationTasks
-Id 		        integer NOT NULL,
-Task       	        varchar NOT NULL,
-Center_Latitude  	FLOAT (53)     NOT NULL,
-Center_Longitude 	FLOAT (53)     NOT NULL,
-Radius  	FLOAT (53)     NOT NULL,
-CityId 		integer     DEFAULT ((0)) NOT NULL,
-Difficulty  	varchar     NOT NULL,
-Description 	varchar     NULL,
-Answer  		varchar     NULL,
-*/
+/* QuestionLocationTasks */
 
 select * from QuestionLocationTasks
 
 select Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description, Answer from QuestionLocationTasks
+
+--for users
+select Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description from QuestionLocationTasks
 
 select * from QuestionLocationTasks where CityId IN (select CityId from Users where Id = '1')
 
@@ -488,13 +504,6 @@ select * from QuestionLocationTasks where Id = '1'
 select Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description, Answer 
 from QuestionLocationTasks where Id = '1'
 
-
-INSERT INTO QuestionLocationTasks (Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description)
-    VALUES (1, 'Посетите Политех', 54.3513933317246, 48.3873583518057, 350, 1, 'light', 'В каком году был построен?');
-INSERT INTO QuestionLocationTasks (Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description)
-    VALUES (2, 'Посетите Стачку', 54.3196205081769, 48.4062026768323, 90, 1, 'medium', 'Дата первой Стачки');
-INSERT INTO QuestionLocationTasks (Id, Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description, Answer)
-    VALUES (3, 'Посетите Innopolis', 0, 0, 0, 2, 'hard', 'Сколько кампусов?', '4');
 
 
 UPDATE QuestionLocationTasks SET Task = 'Ульяновск', Center_Latitude = '0.0', Center_Longitude = '0.0', 
@@ -517,91 +526,225 @@ WHERE Id = 1;
 
 DELETE FROM QuestionLocationTasks WHERE Id = 0;
 /* get list Completed QuestionLocationTasks doesnt work */
+--Insert into QuestionLocationTaskApplicationUsers set (Tasks)
+--INSERT INTO QuestionLocationTaskApplicationUsers VALUES (1,2);
+select * from QuestionLocationTaskApplicationUsers
 
-Insert into QuestionLocationTaskApplicationUsers set (Tasks)
+/* get list Completed QuestionLocationTasks work */
+--completed  tasks in user's city
+SELECT *
+FROM QuestionLocationTasks JOIN (SELECT task_id
+			FROM QuestionLocationTaskApplicationUsers AU JOIN QuestionLocationTasks T ON AU.task_id=T.id JOIN users U ON U.id = AU.user_id
+			WHERE user_id = '1'
+				AND U.cityid = T.cityid
+				) as completedTasksForUser
+		ON task_id = id
+--with city -- simplier
+select *
+from QuestionLocationTasks 
+		where Id IN 
+			(select task_id from QuestionLocationTaskApplicationUsers where user_id = '1')
+		and cityId IN 
+			(select cityId from users where Id = '1')
+--without city
+select * from QuestionLocationTasks where Id IN (select task_id 
+from QuestionLocationTaskApplicationUsers where user_id = '2')
 
-/* get list UnCompleted QuestionLocationTasks doesnt work */
+/* get list UnCompleted QuestionLocationTasks work */
+--offered (non-completed tasks)
+SELECT T.Id, T.task, T.center_latitude, T.center_longitude, T.radius, T.cityId, T.difficulty, T.description
+FROM QuestionLocationTasks T, users U
+WHERE T.cityid = U.cityid
+	AND U.id = '2' 						--userid
+	AND T.id NOT IN	(SELECT task_id 
+			FROM QuestionLocationTaskApplicationUsers 
+			WHERE user_id = '2')	 		--userid
+--end QuestionLocationTaskApplicationUsers 
+
+
+
+--QuestionAnswerApplicationUsers
+
+
+/* QuestionAnswers */
+/*
+Id 		        integer NOT NULL,
+Task       	        varchar NOT NULL,
+CityId 		integer     DEFAULT ((0)) NOT NULL,
+Answer  	varchar     NOT NULL,
+Difficulty  	varchar     NOT NULL,
+Description 	varchar     NULL,
+
+ */
+select * from QuestionAnswers
+
+select Id, Task, CityId, Difficulty, Description, Answer from QuestionAnswers
+
+--for users
+select Id, Task, CityId, Difficulty, Description from QuestionAnswers
+
+select * from QuestionAnswers where CityId IN (select CityId from Users where Id = '1')
+
+select Id, Task, CityId, Difficulty, Description, Answer 
+from QuestionAnswers where CityId IN (select CityId from Users where Id = '1')
+
+select * from QuestionAnswers where Id = '1'
+
+select Id, Task, CityId, Difficulty, Description, Answer 
+from QuestionAnswers where Id = '1'
+
+
+
+UPDATE QuestionAnswers SET Task = 'Ульяновск', CityId = '1', Difficulty = 'hard', Description = '', Answer = ''
+WHERE Id = 1;
+
+UPDATE QuestionAnswers SET Difficulty = '', Description = '', Answer = ''
+WHERE Id = 1;
+
+UPDATE QuestionAnswers SET  Description = '', Answer = ''
+WHERE Id = 1;
+
+UPDATE QuestionAnswers SET Difficulty = '' WHERE Id = 1;
+
+UPDATE QuestionAnswers SET Task = 'Ульяновск2', Difficulty = 'hard', Description = '', Answer = ''
+WHERE Id = 1;
+
+UPDATE QuestionAnswers SET Task = 'Ульяновск2', Description = '', Answer = ''
+WHERE Id = 1;
+
+
+DELETE FROM QuestionAnswers WHERE Id = 0;
+--Insert into QuestionAnswerApplicationUsers set (Tasks)
+--INSERT INTO QuestionAnswerApplicationUsers VALUES (1,2);
+select * from QuestionAnswerApplicationUsers
+--QuestionAnswers
+/* get list Completed QuestionLocationTasks work */
+--completed  tasks in user's city
+SELECT Id, task, cityId, difficulty, description
+FROM QuestionAnswers JOIN (SELECT task_id
+			FROM QuestionAnswerApplicationUsers AU JOIN QuestionAnswers T ON AU.task_id=T.id JOIN users U ON U.id = AU.user_id
+			WHERE user_id = '1'
+				AND U.cityid = T.cityid
+				) as completedTasksForUser
+		ON task_id = id
+--with city -- simplier
+select Id, task, cityId, difficulty, description
+from QuestionAnswers 
+		where Id IN 
+			(select task_id from QuestionAnswerApplicationUsers where user_id = '1')
+		and cityId IN 
+			(select cityId from users where Id = '1')
+--without city
+select Id, task, cityId, difficulty, description from QuestionAnswers where Id IN (select task_id 
+from QuestionAnswerApplicationUsers where user_id = '2')
+
+/* get list UnCompleted QuestionAnswers work */
+--offered (non-completed tasks)
+SELECT T.Id, T.task, T.cityId, T.difficulty, T.description
+FROM QuestionAnswers T, users U
+WHERE T.cityid = U.cityid
+	AND U.id = '2' 						--userid
+	AND T.id NOT IN	(SELECT task_id 
+			FROM QuestionAnswerApplicationUsers 
+			WHERE user_id = '2')	 		--userid
+--end QuestionAnswers 
+
 
 
 
 /*-----------------------------------------------------------------------------*/
-/*
 
-CREATE TABLE [dbo].[Messages] (
-    [FromId] NVARCHAR (128) NOT NULL,
-    [ToId]   NVARCHAR (128) NOT NULL,
-    [Id]     NVARCHAR (128) NOT NULL,
-    [Text]   NVARCHAR (MAX) NULL,
-    [Date]   DATETIME       NOT NULL,
-    CONSTRAINT [PK_dbo.Messages] PRIMARY KEY CLUSTERED ([FromId] ASC, [ToId] ASC, [Id] ASC),
-    CONSTRAINT [FK_dbo.Messages_dbo.AspNetUsers_FromId] FOREIGN KEY ([FromId]) REFERENCES [dbo].[AspNetUsers] ([Id]),
-    CONSTRAINT [FK_dbo.Messages_dbo.AspNetUsers_ToId] FOREIGN KEY ([ToId]) REFERENCES [dbo].[AspNetUsers] ([Id])
-);
+--level update trigger
 
-CREATE TABLE [dbo].[AspNetUsers] (
-    [Id]                     NVARCHAR (128) NOT NULL,
-    [FirstName]              NVARCHAR (MAX) NULL,
-    [LastName]               NVARCHAR (MAX) NULL,
-    [Email]                  NVARCHAR (256) NULL,
-    [EmailConfirmed]         BIT            NOT NULL,
-    [PasswordHash]           NVARCHAR (MAX) NULL,
-    [SecurityStamp]          NVARCHAR (MAX) NULL,
-    [PhoneNumber]            NVARCHAR (MAX) NULL,
-    [PhoneNumberConfirmed]   BIT            NOT NULL,
-    [TwoFactorEnabled]       BIT            NOT NULL,
-    [LockoutEndDateUtc]      DATETIME       NULL,
-    [LockoutEnabled]         BIT            NOT NULL,
-    [AccessFailedCount]      INT            NOT NULL,
-    [UserName]               NVARCHAR (256) NOT NULL,
-    [Other]                  NVARCHAR (MAX) NULL,
-    [LastLocation_Latitude]  FLOAT (53)     DEFAULT ((0)) NOT NULL,
-    [LastLocation_Longitude] FLOAT (53)     DEFAULT ((0)) NOT NULL,
-    [LastSeen]               DATETIME       DEFAULT ('1900-01-01T00:00:00.000') NOT NULL,
-    [Level]                  FLOAT (53)     DEFAULT ((0)) NOT NULL,
-    [CityId]                 INT            DEFAULT ((0)) NOT NULL,
-    CONSTRAINT [PK_dbo.AspNetUsers] PRIMARY KEY CLUSTERED ([Id] ASC),
-    CONSTRAINT [FK_dbo.AspNetUsers_dbo.Cities_CityId] FOREIGN KEY ([CityId]) REFERENCES [dbo].[Cities] ([Id]) ON DELETE CASCADE
-);
+CREATE OR REPLACE FUNCTION UpdateExperienceFoo() RETURNS TRIGGER AS $UpdateExperience$
+	DECLARE 
+	taskdif VARCHAR;
+	tdif DOUBLE PRECISION;
+	BEGIN
+		taskdif = (SELECT difficulty FROM locationtasks WHERE id = NEW.task_id);
+		CASE taskdif
+			WHEN 'light' THEN
+				tdif = 0.1;
+			WHEN 'medium' THEN
+				tdif = 0.2;
+			WHEN 'hard' THEN
+				tdif = 0.3; 
+			ELSE	tdif = 0;
+		END CASE;
+		UPDATE users SET level = level + tdif --(SELECT task_id FROM NEW) 
+		WHERE id = NEW.user_id;
+		RETURN NEW;
+	END;
+$UpdateExperience$ LANGUAGE plpgsql;
 
-CREATE TABLE [dbo].[Cities] (
-    [Id]               INT            IDENTITY (1, 1) NOT NULL,
-    [Name]             NVARCHAR (MAX) NULL,
-    [Center_Latitude]  FLOAT (53)     DEFAULT ((0)) NOT NULL,
-    [Center_Longitude] FLOAT (53)     DEFAULT ((0)) NOT NULL,
-    CONSTRAINT [PK_dbo.Cities] PRIMARY KEY CLUSTERED ([Id] ASC)
-);
-CREATE TABLE [dbo].[LocationTasks] (
-    [Id]               INT            IDENTITY (1, 1) NOT NULL,
-    [Task]             NVARCHAR (MAX) NULL,
-    [Center_Latitude]  FLOAT (53)     NOT NULL,
-    [Center_Longitude] FLOAT (53)     NOT NULL,
-    [Radius]           FLOAT (53)     NOT NULL,
-    [CityId]           INT            DEFAULT ((1)) NOT NULL,
-    [Difficulty]       NVARCHAR (MAX) NULL,
-    [Description]      NVARCHAR (MAX) NULL,
-    CONSTRAINT [PK_dbo.LocationTasks] PRIMARY KEY CLUSTERED ([Id] ASC)
-);
-CREATE TABLE [dbo].[QuestionAnswers] (
-    [Id]          INT            IDENTITY (1, 1) NOT NULL,
-    [Task]        NVARCHAR (MAX) NULL,
-    [Description] NVARCHAR (MAX) NULL,
-    [Answer]      NVARCHAR (MAX) NULL,
-    [CityId]      INT            NOT NULL,
-    [Difficulty]  NVARCHAR (MAX) NULL,
-    CONSTRAINT [PK_dbo.QuestionAnswers] PRIMARY KEY CLUSTERED ([Id] ASC)
-);
+CREATE TRIGGER UpdateExperience 
+	AFTER INSERT ON LocationTaskApplicationUsers
+FOR EACH ROW EXECUTE PROCEDURE UpdateExperienceFoo()
+--end nigger
 
-CREATE TABLE [dbo].[QuestionLocationTasks] (
-    [Id]               INT            IDENTITY (1, 1) NOT NULL,
-    [Task]             NVARCHAR (MAX) NULL,
-    [Description]      NVARCHAR (MAX) NULL,
-    [Center_Latitude]  FLOAT (53)     NOT NULL,
-    [Center_Longitude] FLOAT (53)     NOT NULL,
-    [Radius]           FLOAT (53)     NOT NULL,
-    [Answer]           NVARCHAR (MAX) NULL,
-    [Difficulty]       NVARCHAR (MAX) NULL,
-    [CityId]           INT            NOT NULL,
-    CONSTRAINT [PK_dbo.QuestionLocationTasks] PRIMARY KEY CLUSTERED ([Id] ASC)
-);
+/*-----------------------------------------------------------------------------*/
 
-*/
+/*-----------------------------------------------------------------------------*/
+
+--level update trigger
+
+CREATE OR REPLACE FUNCTION UpdateExperienceFoo2() RETURNS TRIGGER AS $UpdateExperience2$
+	DECLARE 
+	taskdif VARCHAR;
+	tdif DOUBLE PRECISION;
+	BEGIN
+		taskdif = (SELECT difficulty FROM questionlocationtasks WHERE id = NEW.task_id);
+		CASE taskdif
+			WHEN 'light' THEN
+				tdif = 0.1;
+			WHEN 'medium' THEN
+				tdif = 0.2;
+			WHEN 'hard' THEN
+				tdif = 0.3; 
+			ELSE	tdif = 0;
+		END CASE;
+		UPDATE users SET level = level + tdif --(SELECT task_id FROM NEW) 
+		WHERE id = NEW.user_id;
+		RETURN NEW;
+	END;
+$UpdateExperience2$ LANGUAGE plpgsql;
+
+CREATE TRIGGER UpdateExperience2 
+	AFTER INSERT ON QuestionLocationTaskApplicationUsers
+FOR EACH ROW EXECUTE PROCEDURE UpdateExperienceFoo2()
+--end nigger
+
+/*-----------------------------------------------------------------------------*/
+
+/*-----------------------------------------------------------------------------*/
+
+--level update trigger
+
+CREATE OR REPLACE FUNCTION UpdateExperienceFoo3() RETURNS TRIGGER AS $UpdateExperience3$
+	DECLARE 
+	taskdif VARCHAR;
+	tdif DOUBLE PRECISION;
+	BEGIN
+		taskdif = (SELECT difficulty FROM QuestionAnswers WHERE id = NEW.task_id);
+		CASE taskdif
+			WHEN 'light' THEN
+				tdif = 0.1;
+			WHEN 'medium' THEN
+				tdif = 0.2;
+			WHEN 'hard' THEN
+				tdif = 0.3; 
+			ELSE	tdif = 0;
+		END CASE;
+		UPDATE users SET level = level + tdif --(SELECT task_id FROM NEW) 
+		WHERE id = NEW.user_id;
+		RETURN NEW;
+	END;
+$UpdateExperience3$ LANGUAGE plpgsql;
+
+CREATE TRIGGER UpdateExperience3 
+	AFTER INSERT ON QuestionAnswerApplicationUsers
+FOR EACH ROW EXECUTE PROCEDURE UpdateExperienceFoo3()
+--end nigger
+
+/*-----------------------------------------------------------------------------*/
+
