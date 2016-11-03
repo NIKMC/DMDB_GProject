@@ -140,4 +140,33 @@ WHERE T.cityid = U.cityid
 
 
 
+--level update nigger
+
+CREATE OR REPLACE FUNCTION UpdateExperienceFoo() RETURNS TRIGGER AS $UpdateExperience$
+	DECLARE 
+	taskdif VARCHAR;
+	tdif DOUBLE PRECISION;
+	BEGIN
+		taskdif = (SELECT difficulty FROM locationtasks WHERE id = NEW.task_id);
+		CASE taskdif
+			WHEN 'light' THEN
+				tdif = 0.1;
+			WHEN 'medium' THEN
+				tdif = 0.2;
+			WHEN 'hard' THEN
+				tdif = 0.3; 
+			ELSE	tdif = 0;
+		END CASE;
+		UPDATE users SET level = level + tdif --(SELECT task_id FROM NEW) 
+		WHERE id = NEW.user_id;
+		RETURN NEW;
+	END;
+$UpdateExperience$ LANGUAGE plpgsql;
+
+CREATE TRIGGER UpdateExperience 
+	AFTER INSERT ON LocationTaskApplicationUsers
+FOR EACH ROW EXECUTE PROCEDURE UpdateExperienceFoo()
+--end nigger
+
 --end LocationTaskApplicationUsers 
+
