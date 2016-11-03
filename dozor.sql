@@ -257,11 +257,56 @@ WHERE Id = 1;
 DELETE FROM Users WHERE Id = 0;
 
 /*getFriends doesnt work*/
-select * from Users where Id = (select FollowerId from UserFollowers where UserId = '1')
-select Id, FirstName, LastName, Email, UserName, Other, LastLocation_Latitude, LastLocation_Longitude, Level from Users  where Id = (select FollowerId from UserFollowers where UserId = '1')
+--friends list
+SELECT * 
+FROM users JOIN (SELECT followerId
+		FROM userfollowers u1
+		WHERE u1.userid = '1'
+			AND followerid IN  (	SELECT userId
+						FROM userfollowers
+						WHERE followerId = u1.userid)) as friend_ids
+	ON followerid = id
 /*getFolowers doesnt work*/
 select * from Users where Id = (select FollowerId from UserFollowers where UserId = '1')
 select Id, FirstName, LastName, Email, UserName, Other, LastLocation_Latitude, LastLocation_Longitude, Level from Users  where Id = (select FollowerId from UserFollowers where UserId = '1')
+
+INSERT INTO userfollowers 	(userid, followerid)
+		VALUES		('1', '2');
+INSERT INTO userfollowers 	(userid, followerid)
+		VALUES		('1', '3');
+INSERT INTO userfollowers 	(userid, followerid)
+		VALUES		('1', '4');
+INSERT INTO userfollowers 	(userid, followerid)
+		VALUES		('2', '1');
+INSERT INTO userfollowers 	(userid, followerid)
+		VALUES		('3', '1');
+INSERT INTO userfollowers 	(userid, followerid)
+		VALUES		('3', '2');
+INSERT INTO userfollowers 	(userid, followerid)
+		VALUES		('2', '3');
+INSERT INTO userfollowers 	(userid, followerid)
+		VALUES		('5', '1');
+		select * from Users
+
+
+
+--followers list - doesnt work
+SELECT * 
+FROM users JOIN (SELECT followerId
+		FROM userfollowers u1
+		WHERE u1.userid = '1'	) as follower_ids
+	ON followerid = id
+
+--subscriptions list
+SELECT * 
+FROM users JOIN (SELECT  userid
+		FROM userfollowers u
+		WHERE u.followerId = '1'	) as following_id
+	ON userid = id
+
+--end userfollowers
+
+
 
 
 /*  selects, insert, update, delete Messages   */
@@ -296,29 +341,14 @@ INSERT INTO Messages (Id, FromId, ToId, Text, Date)
     VALUES (11, 4, 1, 'hi man' ,'2016-10-22 12:33:00');
 INSERT INTO Messages (Id, FromId, ToId, Text, Date)
     VALUES (12, 1, 5, 'FOr five' ,'2016-10-22 12:34:00');
-/* getListMessage = Dialog*/
+/* getListMessage = Dialog - works*/
 select * from Messages 
 where FromId = '1' and ToId = '2' or FromId = '2' and ToId = '1'
 ORDER by Date 
 
-/* getListDialogs = Dialogs - doesnt work*/
-select FromId, ToId, Id, Text, Date from Messages 
-where FromId = '1' or ToId = '1' 
-Group by 
-ORDER by Date desc limit 1
+/* getListDialogs = Dialogs - works*/
 
-max(Date)
-
-none
-
-select * from messages where case
-
-select  m.fromid, m.toid from messages m
-where m.fromid = '1' or m.toid = '1'
-
-select m.fromid, m.toid from messages m
-where exists (select mm.fromid from messages mm where mm.fromid = '1' or mm.toid = '1' and mm.fromid < m.toid)
-
+--version 1
 SELECT * FROM 
 (
     SELECT DISTINCT ON (interlocutor) * FROM
@@ -331,6 +361,7 @@ SELECT * FROM
 ) AS _t2
 ORDER BY date DESC;
 
+--version 2 better
 SELECT m1.* 
 FROM Messages m1
 WHERE (m1.fromid = '1' OR m1.toid = '1')
@@ -339,14 +370,6 @@ WHERE (m1.fromid = '1' OR m1.toid = '1')
    WHERE LEAST(m2.fromid, m2.toid) || GREATEST(m2.fromid, m2.toid) = LEAST(m1.fromid, m1.toid) || GREATEST(m1.fromid, m1.toid))
 ORDER BY m1.date DESC
 
-select * from Messages where(
-select distinct (ins) where
-select (ins) where
-where FromId = '1' order by ind 
-union
-select (ins) where
-
-)
 
 
 /*  selects, insert, update, delete LocationTasks   */
@@ -400,8 +423,43 @@ WHERE Id = 1;
 
 DELETE FROM LocationTasks WHERE Id = 0;
 
-/* get list Completed LocationTasks doesnt work */
-/* get list UnCompleted LocationTasks doesnt work */
+
+INSERT INTO LocationTaskApplicationUsers VALUES (1,1), (3,1), (3, 2), (3,3);
+INSERT INTO LocationTaskApplicationUsers VALUES (1,2);
+--INSERT INTO LocationTaskApplicationUsers VALUES(2,1000), (3,1000), (1, 1), (2,1);
+select * from LocationTaskApplicationUsers
+/* get list Completed LocationTasks work */
+--completed  tasks in user's city
+SELECT *
+FROM locationtasks JOIN (SELECT task_id
+			FROM LocationTaskApplicationUsers AU JOIN locationtasks T ON AU.task_id=T.id JOIN users U ON U.id = AU.user_id
+			WHERE user_id = '1'
+				AND U.cityid = T.cityid
+				) as completedTasksForUser
+		ON task_id = id
+--with city -- simplier
+select * 
+from locationTasks 
+		where Id IN 
+			(select task_id from locationTaskApplicationUsers where user_id = '1')
+		and cityId IN 
+			(select cityId from users where Id = '1')
+--without city
+select * from locationTasks where Id IN (select task_id from locationTaskApplicationUsers where user_id = '1')
+
+/* get list UnCompleted LocationTasks work */
+--offered (non-completed tasks)
+SELECT T.*
+FROM locationtasks T, users U
+WHERE T.cityid = U.cityid
+	AND U.id = '3' 						--userid
+	AND T.id NOT IN	(SELECT task_id 
+			FROM LocationTaskApplicationUsers 
+			WHERE user_id = '3')	 		--userid
+
+
+
+--end LocationTaskApplicationUsers 
 
 
 /* QuestionLocationTasks
@@ -459,6 +517,9 @@ WHERE Id = 1;
 
 DELETE FROM QuestionLocationTasks WHERE Id = 0;
 /* get list Completed QuestionLocationTasks doesnt work */
+
+Insert into QuestionLocationTaskApplicationUsers set (Tasks)
+
 /* get list UnCompleted QuestionLocationTasks doesnt work */
 
 
