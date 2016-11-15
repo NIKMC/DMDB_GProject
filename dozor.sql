@@ -1,4 +1,4 @@
-﻿--drop tables
+--drop tables
 
 drop table if exists LocationTaskApplicationUsers;
 drop table if exists QuestionAnswerApplicationUsers;
@@ -15,7 +15,7 @@ drop table if exists Cities;
 --create tables
 
 CREATE TABLE Cities(
-Id 		        integer NOT NULL,
+Id 		        serial NOT NULL,
 Name       	        varchar NULL,
 Center_Latitude  	FLOAT (53)     DEFAULT ((0)) NOT NULL,
 Center_Longitude 	FLOAT (53)     DEFAULT ((0)) NOT NULL,
@@ -23,7 +23,7 @@ CONSTRAINT PK_Cities PRIMARY KEY (Id)
 );
 
 CREATE TABLE Users(
-Id 		       varchar(128) NOT NULL,
+Id 		        serial NOT NULL,
 FirstName              varchar NULL,
 LastName               varchar NULL,
 Email                  varchar (256) NULL,
@@ -69,7 +69,7 @@ CONSTRAINT FK_Users_Cities_CityId FOREIGN KEY (CityId) REFERENCES Cities (Id)
 */
 
 CREATE TABLE LocationTasks(
-Id 		        integer NOT NULL,
+Id 		        serial NOT NULL,
 Task       	        varchar NOT NULL,
 Center_Latitude  	FLOAT (53)     NOT NULL,
 Center_Longitude 	FLOAT (53)     NOT NULL,
@@ -82,7 +82,7 @@ CONSTRAINT FK_LocationTasks_Cities_CityId FOREIGN KEY (CityId) REFERENCES Cities
 );
 
 CREATE TABLE QuestionAnswers(
-Id 		        integer NOT NULL,
+Id 		        serial NOT NULL,
 Task       	        varchar NOT NULL,
 CityId 		integer     DEFAULT ((0)) NOT NULL,
 Answer  	varchar     NOT NULL,
@@ -92,7 +92,7 @@ CONSTRAINT PK_QuestionAnswers PRIMARY KEY (Id),
 CONSTRAINT FK_QuestionAnswers_Cities_CityId FOREIGN KEY (CityId) REFERENCES Cities (Id) ON DELETE CASCADE
 );
 CREATE TABLE QuestionLocationTasks(
-Id 		        integer NOT NULL,
+Id 		        serial NOT NULL,
 Task       	        varchar NOT NULL,
 Center_Latitude  	FLOAT (53)     NOT NULL,
 Center_Longitude 	FLOAT (53)     NOT NULL,
@@ -106,9 +106,9 @@ CONSTRAINT FK_QuestionLocationTasks_Cities_CityId FOREIGN KEY (CityId) REFERENCE
 );
 
 CREATE TABLE Messages(
-FromId 		       varchar(128) NOT NULL,
-ToId 		       varchar(128) NOT NULL,
-Id 		       varchar(128) NOT NULL,
+FromId 		       integer NOT NULL,
+ToId 		       integer NOT NULL,
+Id 		       serial NOT NULL,
 Text		       varchar NULL,
 Date 		       timestamp NOT NULL,
 CONSTRAINT PK_Messages PRIMARY KEY (FromId, ToId, Id),
@@ -126,8 +126,8 @@ CONSTRAINT FK_Friendrequests_Users_FollowerId FOREIGN KEY (FollowerId) REFERENCE
 );
 */
 CREATE TABLE UserFollowers(
-UserId			varchar(128) NOT NULL,
-FollowerId		varchar(128) NOT NULL,
+UserId			integer NOT NULL,
+FollowerId		integer NOT NULL,
 CONSTRAINT PK_UserFollowers PRIMARY KEY (UserId, FollowerId),
 CONSTRAINT FK_UserFollowers_Users_UserId FOREIGN KEY (UserId) REFERENCES Users (Id) ON DELETE CASCADE,
 CONSTRAINT FK_UserFollowers_Users_FollowerId FOREIGN KEY (FollowerId) REFERENCES Users (Id) ON DELETE CASCADE
@@ -135,7 +135,7 @@ CONSTRAINT FK_UserFollowers_Users_FollowerId FOREIGN KEY (FollowerId) REFERENCES
 
 CREATE TABLE LocationTaskApplicationUsers(
 Task_Id			integer NOT NULL,
-User_Id		varchar(128) NOT NULL,
+User_Id			integer NOT NULL,
 CONSTRAINT PK_LocationTaskApplicationUsers PRIMARY KEY (Task_Id, User_Id),
 CONSTRAINT FK_LocationTaskApplicationUsers_Tasks_Task_Id FOREIGN KEY (Task_Id) REFERENCES LocationTasks (Id) ON DELETE CASCADE,
 CONSTRAINT FK_LocationTaskApplicationUsers_Users_User_Id FOREIGN KEY (User_Id) REFERENCES Users (Id) ON DELETE CASCADE
@@ -143,7 +143,7 @@ CONSTRAINT FK_LocationTaskApplicationUsers_Users_User_Id FOREIGN KEY (User_Id) R
 
 CREATE TABLE QuestionAnswerApplicationUsers(
 Task_Id		integer NOT NULL,
-User_Id		varchar(128) NOT NULL,
+User_Id		integer NOT NULL,
 CONSTRAINT PK_QuestionAnswerApplicationUsers PRIMARY KEY (Task_Id, User_Id),
 CONSTRAINT FK_QuestionAnswerApplicationUsers_Tasks_Task_Id FOREIGN KEY (Task_Id) REFERENCES QuestionAnswers (Id) ON DELETE CASCADE,
 CONSTRAINT FK_QuestionAnswerApplicationUsers_Users_User_Id FOREIGN KEY (User_Id) REFERENCES Users (Id) ON DELETE CASCADE
@@ -151,11 +151,12 @@ CONSTRAINT FK_QuestionAnswerApplicationUsers_Users_User_Id FOREIGN KEY (User_Id)
 
 CREATE TABLE QuestionLocationTaskApplicationUsers(
 Task_Id			integer NOT NULL,
-User_Id		varchar(128) NOT NULL,
+User_Id			integer NOT NULL,
 CONSTRAINT PK_QuestionLocationTaskApplicationUsers PRIMARY KEY (Task_Id, User_Id),
 CONSTRAINT FK_QuestionLocationTaskApplicationUsers_Tasks_Task_Id FOREIGN KEY (Task_Id) REFERENCES QuestionLocationTasks (Id) ON DELETE CASCADE,
 CONSTRAINT FK_QuestionLocationTaskApplicationUsers_Users_User_Id FOREIGN KEY (User_Id) REFERENCES Users (Id) ON DELETE CASCADE
 );
+
 
 /*-----------------------------------------------------------------------------*/
 --INSERT
