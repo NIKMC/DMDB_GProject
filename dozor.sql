@@ -7,7 +7,6 @@ drop table if exists QuestionLocationTasks;
 drop table if exists QuestionAnswers;
 drop table if exists LocationTasks;
 drop table if exists Messages;
-drop table if exists FriendRequests;
 drop table if exists UserFollowers;
 drop table if exists Users;
 drop table if exists Cities;
@@ -130,7 +129,8 @@ UserId			integer NOT NULL,
 FollowerId		integer NOT NULL,
 CONSTRAINT PK_UserFollowers PRIMARY KEY (UserId, FollowerId),
 CONSTRAINT FK_UserFollowers_Users_UserId FOREIGN KEY (UserId) REFERENCES Users (Id) ON DELETE CASCADE,
-CONSTRAINT FK_UserFollowers_Users_FollowerId FOREIGN KEY (FollowerId) REFERENCES Users (Id) ON DELETE CASCADE
+CONSTRAINT FK_UserFollowers_Users_FollowerId FOREIGN KEY (FollowerId) REFERENCES Users (Id) ON DELETE CASCADE,
+CONSTRAINT no_self_following CHECK (followerid != userid)
 );
 
 CREATE TABLE LocationTaskApplicationUsers(
@@ -160,9 +160,12 @@ CONSTRAINT FK_QuestionLocationTaskApplicationUsers_Users_User_Id FOREIGN KEY (Us
 
 /*-----------------------------------------------------------------------------*/
 --INSERT
-INSERT INTO Cities VALUES ('Ульяновск');
+INSERT INTO Cities (Name) VALUES ('Ульяновск');
 INSERT INTO Cities (Name, Center_Latitude, Center_Longitude)
     VALUES ('Innopolis', 0.1, 0.1);
+
+
+
 INSERT INTO Users (UserName, FirstName, LastName, Email, Other, CityId)
     VALUES ('NIKMC', 'Ivan', 'Nikitin', 'i.nikitin@innopolis.ru','Innopolis', 2);
 INSERT INTO Users (UserName, FirstName, LastName, Email, Other, CityId)
@@ -173,6 +176,8 @@ INSERT INTO Users ( UserName, FirstName, LastName, Email, Other, CityId)
     VALUES ('qwerty', 'G','','qwerty@qwerty.ru','qwerty', 1);
 INSERT INTO Users ( UserName, FirstName, LastName, Email, Other, CityId)
     VALUES ('hama', 'G','','hama@hama.ru','hama', 1);
+
+
 
 INSERT INTO userfollowers 	(userid, followerid)
 		VALUES		(1, 2);
@@ -190,7 +195,25 @@ INSERT INTO userfollowers 	(userid, followerid)
 		VALUES		(2, 3);
 INSERT INTO userfollowers 	(userid, followerid)
 		VALUES		(5, 1);
-		select * from Users
+INSERT INTO userfollowers 	(userid, followerid)
+		VALUES		(1, 1000);
+INSERT INTO userfollowers 	(userid, followerid)
+		VALUES		(1, 1001);
+INSERT INTO userfollowers 	(userid, followerid)
+		VALUES		(1, 1002);
+INSERT INTO userfollowers 	(userid, followerid)
+		VALUES		(3, 1003);
+INSERT INTO userfollowers 	(userid, followerid)
+		VALUES		(2, 1001);
+INSERT INTO userfollowers 	(userid, followerid)
+		VALUES		(3, 1002);
+INSERT INTO userfollowers 	(userid, followerid)
+		VALUES		(1000, 1);
+INSERT INTO userfollowers 	(userid, followerid)
+		VALUES		(1001, 1);
+
+
+
 
 INSERT INTO Messages (FromId, ToId, Text, Date)
     VALUES (1, 2, 'Привет' , '2016-10-22 12:23:00');
@@ -239,7 +262,6 @@ INSERT INTO QuestionLocationTaskApplicationUsers VALUES (1,1), (3,1), (3, 2), (3
 INSERT INTO QuestionLocationTaskApplicationUsers VALUES (2,2);
 INSERT INTO QuestionLocationTaskApplicationUsers VALUES (1,4);
 
-select * from QuestionAnswers;
 INSERT INTO QuestionAnswers ( Task, CityId, Difficulty, Description, Answer)
     VALUES ( 'Посетите Политех', 1, 'light', 'В каком году был построен?', '');
 INSERT INTO QuestionAnswers ( Task, CityId, Difficulty, Description, Answer)
