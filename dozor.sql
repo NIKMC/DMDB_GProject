@@ -1,4 +1,4 @@
-﻿--drop tables
+--drop tables
 
 drop table if exists LocationTaskApplicationUsers;
 drop table if exists QuestionAnswerApplicationUsers;
@@ -156,6 +156,7 @@ CONSTRAINT PK_QuestionLocationTaskApplicationUsers PRIMARY KEY (Task_Id, User_Id
 CONSTRAINT FK_QuestionLocationTaskApplicationUsers_Tasks_Task_Id FOREIGN KEY (Task_Id) REFERENCES QuestionLocationTasks (Id) ON DELETE CASCADE,
 CONSTRAINT FK_QuestionLocationTaskApplicationUsers_Users_User_Id FOREIGN KEY (User_Id) REFERENCES Users (Id) ON DELETE CASCADE
 );
+
 
 /*-----------------------------------------------------------------------------*/
 --INSERT

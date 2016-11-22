@@ -20,16 +20,16 @@ ORDER BY m1.date DESC
 --Users
 
 INSERT INTO	Users(Id, UserName, FirstName, LastName, Email, Other, CityId) 
-		VALUES('1000', 'ExploChamp', 'Ivan', 'Baranov', 'baran.sobaka@sb.com', 'weird', 2)
+		VALUES('1000', 'ExploChamp', 'Ivan', 'Baranov', 'baran.sobaka@sb.com', 'weird', 2);
 
 INSERT INTO	Users(Id, UserName, FirstName, LastName, Email, Other, CityId) 
-		VALUES('1001', 'SlowPoke', 'Rimma', 'Turtle', 'speeda@sb.com', 'thunderbolt', 1000)
+		VALUES('1001', 'SlowPoke', 'Rimma', 'Turtle', 'speeda@sb.com', 'thunderbolt', 1000);
 
 INSERT INTO	Users(Id, UserName, FirstName, LastName, Email, Other, CityId) 
-		VALUES('1002', 'Liar', 'Guy', 'Ritchie', 'LockStock@TwoBarrels.com', 'filmmaker', 1001)
+		VALUES('1002', 'Liar', 'Guy', 'Ritchie', 'LockStock@TwoBarrels.com', 'filmmaker', 1001);
 
 INSERT INTO	Users(Id, UserName, FirstName, LastName, Email, Other, CityId) 
-		VALUES('1003', 'Dickens', 'David', 'Copperfield', 'illusionist@svn.com', 'invisible', 1000)
+		VALUES('1003', 'Dickens', 'David', 'Copperfield', 'illusionist@svn.com', 'invisible', 1000);
 
 --end Users	
 
@@ -51,7 +51,7 @@ INSERT INTO 	Cities (Id, Name, Center_Latitude, Center_Longitude)
 
 --userfollowers
 
-ALTER TABLE userfollowers ADD CONSTRAINT no_self_following CHECK (followerid != userid)
+ALTER TABLE userfollowers ADD CONSTRAINT no_self_following CHECK (followerid != userid);
 
 INSERT INTO userfollowers 	(userid, followerid)
 		VALUES		('1', '1000');
@@ -168,5 +168,110 @@ CREATE TRIGGER UpdateExperience
 FOR EACH ROW EXECUTE PROCEDURE UpdateExperienceFoo()
 --end nigger
 
+
+--most unpopular tasks by cities
+SELECT c.name, t.task, wrapped.count
+FROM		(
+		SELECT *, row_number() OVER (PARTITION BY cityid )
+		FROM		(
+				SELECT  l.cityid, l.id, COUNT(*) 
+				FROM LocationTasks l JOIN  LocationTaskApplicationUsers lu ON l.id = lu.task_id
+				GROUP BY l.id
+				UNION
+				SELECT  l.cityid, l.id, 0 count
+				FROM LocationTasks l 
+				WHERE NOT EXISTS (	SELECT *
+							FROM LocationTaskApplicationUsers
+							WHERE l.id = task_id
+							) 
+				ORDER BY id
+				) as tc
+		WHERE count =	(
+				SELECT MIN(count)
+				FROM	
+						(
+						SELECT  l.cityid, l.id, COUNT(*) 
+						FROM LocationTasks l JOIN  LocationTaskApplicationUsers lu ON l.id = lu.task_id
+						GROUP BY l.id
+						UNION
+						SELECT  l.cityid, l.id, 0 count
+						FROM LocationTasks l 
+						WHERE NOT EXISTS (	SELECT *
+									FROM LocationTaskApplicationUsers
+									WHERE l.id = task_id
+									) 
+						ORDER BY id
+						) as tc1
+				WHERE cityid = tc.cityid
+				)
+		) as wrapped
+		JOIN cities c ON c.id = wrapped.cityid
+		JOIN LocationTasks t ON t.id = wrapped.id
+WHERE wrapped.row_number = 1
+
+--
+
+
 --end LocationTaskApplicationUsers 
 
+
+
+SELECT c.name, COUNT(u.*) as ExperiencedPlayersNumber
+FROM users u JOIN cities c ON u.cityid = c.id
+WHERE u.level > 0
+GROUP BY c.name
+ORDER BY c.name
+
+
+
+--most unpopular tasks by cities
+SELECT c.name, t.task, wrapped.count
+FROM		(
+		SELECT *, row_number() OVER (PARTITION BY cityid )
+		FROM		(
+				SELECT  l.cityid, l.id, COUNT(*) 
+				FROM LocationTasks l JOIN  LocationTaskApplicationUsers lu ON l.id = lu.task_id
+				GROUP BY l.id
+				UNION
+				SELECT  l.cityid, l.id, 0 count
+				FROM LocationTasks l 
+				WHERE NOT EXISTS (	SELECT *
+							FROM LocationTaskApplicationUsers
+							WHERE l.id = task_id
+							) 
+				ORDER BY id
+				) as tc
+		WHERE count =	(
+				SELECT MIN(count)
+				FROM	
+						(
+						SELECT  l.cityid, l.id, COUNT(*) 
+						FROM LocationTasks l JOIN  LocationTaskApplicationUsers lu ON l.id = lu.task_id
+						GROUP BY l.id
+						UNION
+						SELECT  l.cityid, l.id, 0 count
+						FROM LocationTasks l 
+						WHERE NOT EXISTS (	SELECT *
+									FROM LocationTaskApplicationUsers
+									WHERE l.id = task_id
+									) 
+						ORDER BY id
+						) as tc1
+				WHERE cityid = tc.cityid
+				)
+		) as wrapped
+		JOIN cities c ON c.id = wrapped.cityid
+		JOIN LocationTasks t ON t.id = wrapped.id
+WHERE wrapped.row_number = 1
+
+--
+
+--top unpopular tasks in user's city
+SELECT  t.task, coalesce (COUNT(tu.*), 0) as times_complete
+FROM LocationTasks t LEFT JOIN LocationTaskApplicationUsers tu ON t.id = tu.task_id 
+WHERE t.cityid = (SELECT cityid FROM users WHERE id = '2')
+GROUP BY t.id
+HAVING coalesce (COUNT(tu.*), 0) < 5
+ORDER BY times_complete ASC
+
+--
