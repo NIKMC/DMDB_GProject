@@ -1,4 +1,4 @@
-﻿drop table if exists LocationTaskApplicationUsers;
+drop table if exists LocationTaskApplicationUsers;
 drop table if exists QuestionAnswerApplicationUsers;
 drop table if exists QuestionLocationTaskApplicationUsers;
 drop table if exists QuestionLocationTasks;
@@ -119,3 +119,101 @@ CONSTRAINT PK_QuestionLocationTaskApplicationUsers PRIMARY KEY (Task_Id, User_Id
 CONSTRAINT FK_QuestionLocationTaskApplicationUsers_Tasks_Task_Id FOREIGN KEY (Task_Id) REFERENCES QuestionLocationTasks (Id) ON DELETE CASCADE,
 CONSTRAINT FK_QuestionLocationTaskApplicationUsers_Users_User_Id FOREIGN KEY (User_Id) REFERENCES Users (Id) ON DELETE CASCADE
 );
+
+
+
+/*-----------------------------------------------------------------------------*/
+
+--level update trigger
+
+CREATE OR REPLACE FUNCTION UpdateExperienceFoo() RETURNS TRIGGER AS $UpdateExperience$
+	DECLARE 
+	taskdif VARCHAR;
+	tdif DOUBLE PRECISION;
+	BEGIN
+		taskdif = (SELECT difficulty FROM locationtasks WHERE id = NEW.task_id);
+		CASE taskdif
+			WHEN 'light' THEN
+				tdif = 0.1;
+			WHEN 'medium' THEN
+				tdif = 0.2;
+			WHEN 'hard' THEN
+				tdif = 0.3; 
+			ELSE	tdif = 0;
+		END CASE;
+		UPDATE users SET level = level + tdif --(SELECT task_id FROM NEW) 
+		WHERE id = NEW.user_id;
+		RETURN NEW;
+	END;
+$UpdateExperience$ LANGUAGE plpgsql;
+
+CREATE TRIGGER UpdateExperience 
+	AFTER INSERT ON LocationTaskApplicationUsers
+FOR EACH ROW EXECUTE PROCEDURE UpdateExperienceFoo()
+--end trigger
+
+/*-----------------------------------------------------------------------------*/
+
+/*-----------------------------------------------------------------------------*/
+
+--level update trigger
+
+CREATE OR REPLACE FUNCTION UpdateExperienceFoo2() RETURNS TRIGGER AS $UpdateExperience2$
+	DECLARE 
+	taskdif VARCHAR;
+	tdif DOUBLE PRECISION;
+	BEGIN
+		taskdif = (SELECT difficulty FROM questionlocationtasks WHERE id = NEW.task_id);
+		CASE taskdif
+			WHEN 'light' THEN
+				tdif = 0.1;
+			WHEN 'medium' THEN
+				tdif = 0.2;
+			WHEN 'hard' THEN
+				tdif = 0.3; 
+			ELSE	tdif = 0;
+		END CASE;
+		UPDATE users SET level = level + tdif --(SELECT task_id FROM NEW) 
+		WHERE id = NEW.user_id;
+		RETURN NEW;
+	END;
+$UpdateExperience2$ LANGUAGE plpgsql;
+
+CREATE TRIGGER UpdateExperience2 
+	AFTER INSERT ON QuestionLocationTaskApplicationUsers
+FOR EACH ROW EXECUTE PROCEDURE UpdateExperienceFoo2();
+--end trigger
+
+/*-----------------------------------------------------------------------------*/
+
+/*-----------------------------------------------------------------------------*/
+
+--level update trigger
+
+CREATE OR REPLACE FUNCTION UpdateExperienceFoo3() RETURNS TRIGGER AS $UpdateExperience3$
+	DECLARE 
+	taskdif VARCHAR;
+	tdif DOUBLE PRECISION;
+	BEGIN
+		taskdif = (SELECT difficulty FROM QuestionAnswers WHERE id = NEW.task_id);
+		CASE taskdif
+			WHEN 'light' THEN
+				tdif = 0.1;
+			WHEN 'medium' THEN
+				tdif = 0.2;
+			WHEN 'hard' THEN
+				tdif = 0.3; 
+			ELSE	tdif = 0;
+		END CASE;
+		UPDATE users SET level = level + tdif --(SELECT task_id FROM NEW) 
+		WHERE id = NEW.user_id;
+		RETURN NEW;
+	END;
+$UpdateExperience3$ LANGUAGE plpgsql;
+
+CREATE TRIGGER UpdateExperience3 
+	AFTER INSERT ON QuestionAnswerApplicationUsers
+FOR EACH ROW EXECUTE PROCEDURE UpdateExperienceFoo3()
+--end trigger
+
+/*-----------------------------------------------------------------------------*/
