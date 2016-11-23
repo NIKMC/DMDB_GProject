@@ -301,7 +301,7 @@ INSERT INTO QuestionLocationTasks ( Task, Center_Latitude, Center_Longitude, Rad
     VALUES ( 'Посетите Innopolis', 0, 0, 0, 2, 'hard', 'Сколько кампусов?', '4');
 
 INSERT INTO QuestionLocationtasks ( Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description, Answer)
-    VALUES ( 'Go to paintball playground', 89, 190.2, 1, 2, 'medium', 'What can you see on your left?' 'A corpse');
+    VALUES ( 'Go to paintball playground', 89, 190.2, 1, 2, 'medium', 'What can you see on your left?’, 'A corpse');
 INSERT INTO QuestionLocationtasks ( Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description, Answer)
     VALUES ( 'Visit golfclub', 233.3, 101.2, 1, 2, 'hard', 'How many kinds of clubs are available here?' '15');
 
