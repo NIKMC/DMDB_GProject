@@ -319,6 +319,10 @@ INSERT INTO QuestionAnswers ( Task, CityId, Difficulty, Description, Answer)
     VALUES ( 'Посетите Стачку', 1, 'medium', 'Дата первой Стачки', '2012');
 INSERT INTO QuestionAnswers ( Task, CityId, Difficulty, Description, Answer)
     VALUES ( 'Посетите Innopolis', 2, 'hard', 'Сколько кампусов?', '4');
+INSERT INTO questionanswers ( Task, CityId, Answer, Difficulty , Description)
+    VALUES ( 'How old is this town?', 2, '3', 'hard', 'Ask Yuri Duster');
+INSERT INTO questionanswers ( Task, CityId, Answer, Difficulty , Description)
+    VALUES ( 'How many stories are there in the uni?', 2, '5', 'light', 'Use North staicase');
 
 INSERT INTO QuestionAnswerApplicationUsers VALUES (1,1), (3,1), (3, 2), (3,3);
 INSERT INTO QuestionAnswerApplicationUsers VALUES (2,2);
