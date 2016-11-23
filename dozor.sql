@@ -163,6 +163,27 @@ CONSTRAINT FK_QuestionLocationTaskApplicationUsers_Users_User_Id FOREIGN KEY (Us
 INSERT INTO Cities (Name) VALUES ('Ульяновск');
 INSERT INTO Cities (Name, Center_Latitude, Center_Longitude)
     VALUES ('Innopolis', 0.1, 0.1);
+INSERT INTO 	Cities (Id, Name, Center_Latitude, Center_Longitude)
+		VALUES (1000, 'Manaus', 100.2, 340.221);
+
+INSERT INTO 	Cities (Id, Name, Center_Latitude, Center_Longitude)
+		VALUES (1001, 'Varasi', 100.2, 250.2);
+
+INSERT INTO 	Cities (Id, Name, Center_Latitude, Center_Longitude)
+		VALUES (1002, 'Monaco', 193.4, 222.2);
+
+INSERT INTO 	Cities (Id, Name, Center_Latitude, Center_Longitude)
+		VALUES (1003, 'Riga', 53.2, 102.8);
+INSERT INTO 	Cities (Id, Name, Center_Latitude, Center_Longitude)
+		VALUES (3, ‘Antananariva’, 123, 65.8);
+INSERT INTO 	Cities (Id, Name, Center_Latitude, Center_Longitude)
+		VALUES (5, ‘Khabul’, 123.4, 283.1);
+INSERT INTO 	Cities (Id, Name, Center_Latitude, Center_Longitude)
+		VALUES (4, ‘Sao Paolo’, 219.3, 261.1);
+INSERT INTO 	Cities (Id, Name, Center_Latitude, Center_Longitude)
+		VALUES (6, ‘Cusco’, 82.9, 202.4);
+--end cities	
+
 
 
 
