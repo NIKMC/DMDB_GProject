@@ -267,6 +267,27 @@ INSERT INTO Locationtasks ( Task, Center_Latitude, Center_Longitude, Radius, Cit
     VALUES ( 'Посетите Стачку', 54.3196205081769, 48.4062026768323, 90, 1, 'medium', '');
 INSERT INTO Locationtasks ( Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description)
     VALUES ( 'Посетите Innopolis', 0, 0, 0, 2, 'hard', '');
+INSERT INTO Locationtasks ( Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description)
+    VALUES ( 'Visit Bakhetle', 84, 3, 350, 2, 'light', 'have some food');
+INSERT INTO Locationtasks ( Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description)
+    VALUES ( 'Find Water Supply Station', 113, 75, 3, 2, 'medium', 'take a run');
+INSERT INTO Locationtasks ( Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description)
+    VALUES ( 'Reach the forest', 341, 12, 10, 2, 'hard', 'pick berries');
+INSERT INTO Locationtasks ( Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description)
+    VALUES ( 'Climb the Eiffel Tower', 341, 12, 10, 1, 'hard', 'if it is there');
+INSERT INTO Locationtasks ( Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description)
+    VALUES ( 'Collect 100 coconuts', 113, 90, 170, 3, 'medium', 'look upwards');
+INSERT INTO Locationtasks ( Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description)
+    VALUES ( 'Climb the Eiffel Tower', 341, 12, 10, 3, 'hard', 'if it is there');
+INSERT INTO Locationtasks ( Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description)
+    VALUES ( 'Amir Timur Museum', 89, 190.2, 1, 4, 'easy', 'try to find a free way in');
+INSERT INTO Locationtasks ( Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description)
+    VALUES ( 'Swim across the Kazanka river', 192.4, 190.2, 1, 5, 'hard', 'Ask Michael Phelps how to')
+INSERT INTO Locationtasks ( Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description)
+    VALUES ( 'Find Christo Monument', 89, 190.2, 1, 7, 'medium', 'reminds of something');
+
+
+
 
 INSERT INTO LocationTaskApplicationUsers VALUES (1,1), (3,1), (3, 2), (3,3);
 INSERT INTO LocationTaskApplicationUsers VALUES (1,2);
