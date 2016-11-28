@@ -174,14 +174,14 @@ INSERT INTO 	Cities (Id, Name, Center_Latitude, Center_Longitude)
 
 INSERT INTO 	Cities (Id, Name, Center_Latitude, Center_Longitude)
 		VALUES (1003, 'Riga', 53.2, 102.8);
+INSERT INTO 	Cities (Id, name, Center_Latitude, Center_Longitude)
+		VALUES (3, 'Antananariva', 123, 65.8);
 INSERT INTO 	Cities (Id, Name, Center_Latitude, Center_Longitude)
-		VALUES (3, ‘Antananariva’, 123, 65.8);
+		VALUES (5, 'Khabul', 123.4, 283.1);
 INSERT INTO 	Cities (Id, Name, Center_Latitude, Center_Longitude)
-		VALUES (5, ‘Khabul’, 123.4, 283.1);
+		VALUES (4, 'Sao Paolo', 219.3, 261.1);
 INSERT INTO 	Cities (Id, Name, Center_Latitude, Center_Longitude)
-		VALUES (4, ‘Sao Paolo’, 219.3, 261.1);
-INSERT INTO 	Cities (Id, Name, Center_Latitude, Center_Longitude)
-		VALUES (6, ‘Cusco’, 82.9, 202.4);
+		VALUES (6, 'Cusco', 82.9, 202.4);
 --end cities	
 
 
@@ -282,7 +282,7 @@ INSERT INTO Locationtasks ( Task, Center_Latitude, Center_Longitude, Radius, Cit
 INSERT INTO Locationtasks ( Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description)
     VALUES ( 'Amir Timur Museum', 89, 190.2, 1, 4, 'easy', 'try to find a free way in');
 INSERT INTO Locationtasks ( Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description)
-    VALUES ( 'Swim across the Kazanka river', 192.4, 190.2, 1, 5, 'hard', 'Ask Michael Phelps how to')
+    VALUES ( 'Swim across the Kazanka river', 192.4, 190.2, 1, 5, 'hard', 'Ask Michael Phelps how to’);
 INSERT INTO Locationtasks ( Task, Center_Latitude, Center_Longitude, Radius, CityId, Difficulty, Description)
     VALUES ( 'Find Christo Monument', 89, 190.2, 1, 7, 'medium', 'reminds of something');
 
@@ -586,6 +586,52 @@ WHERE T.cityid = U.cityid
 	AND T.id NOT IN	(SELECT task_id 
 			FROM LocationTaskApplicationUsers 
 			WHERE user_id = 3)	 		--userid
+
+
+-- suggestion of user's favourite location task difficulty
+CREATE VIEW USER_TASKS_GROUP_DFCLT (user_id, difficulty, count)
+AS
+		SELECT user_id, difficulty, COUNT(*) 
+		FROM locationtaskapplicationusers TU1 JOIN Locationtasks T1 ON TU1.task_id = T1.id
+		GROUP BY user_id, difficulty
+		ORDER BY user_id ASC, difficulty DESC
+
+-- user’s favourite difficulty
+SELECT  difficulty
+FROM USER_TASKS_GROUP_DFCLT A_TAB
+WHERE count >= ALL (	SELECT count
+			FROM USER_TASKS_GROUP_DFCLT
+			WHERE user_id = A_TAB.user_id
+			)
+	AND A_TAB.user_id = 1 					--user id
+LIMIT 1
+
+--		
+-- top popular tasks of user's favourite difficulty
+SELECT T.*, COUNT(*)
+FROM locationtasks T, LocationTaskApplicationUsers TU
+WHERE T.id = TU.task_id
+	AND cityid = 	(SELECT cityid FROM users WHERE id = 1)   		 		--userid
+	AND T.id NOT IN		(
+				SELECT task_id 
+				FROM LocationTaskApplicationUsers 
+				WHERE user_id = 1						--userid
+				)
+	AND difficulty = 	(
+				SELECT  difficulty
+				FROM USER_TASKS_GROUP_DFCLT A_TAB
+				WHERE count >= ALL (	SELECT count
+							FROM USER_TASKS_GROUP_DFCLT
+							WHERE user_id = A_TAB.user_id
+							)
+					AND A_TAB.user_id = 1 					--user id
+				LIMIT 1
+				)
+GROUP BY id
+ORDER BY count DESC
+LIMIT 3
+--
+
 
 --end LocationTaskApplicationUsers 
 
@@ -947,4 +993,6 @@ FOR EACH ROW EXECUTE PROCEDURE UpdateExperienceFoo3()
 --end trigger
 
 /*-----------------------------------------------------------------------------*/
+
+
 
