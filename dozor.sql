@@ -608,7 +608,7 @@ LIMIT 1
 
 --		
 -- top popular tasks of user's favourite difficulty
-SELECT T.*, COUNT(*)
+SELECT T.task, T.center_latitude, T.center_longitude, T.radius, T.difficulty, T.description, COUNT(*) as Completed
 FROM locationtasks T, LocationTaskApplicationUsers TU
 WHERE T.id = TU.task_id
 	AND cityid = 	(SELECT cityid FROM users WHERE id = 1)   		 		--userid
@@ -628,7 +628,7 @@ WHERE T.id = TU.task_id
 				LIMIT 1
 				)
 GROUP BY id
-ORDER BY count DESC
+ORDER BY Completed DESC
 LIMIT 3
 --
 
